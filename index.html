@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wander With Suzy</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Leaflet.markercluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & tokens ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #FFF8F0;
+      --coral:   #FF6B6B;
+      --coral-d: #e85555;
+      --green:   #2D6A4F;
+      --green-l: #40916C;
+      --text:    #2c2c2c;
+      --muted:   #888;
+      --card-bg: #ffffff;
+      --radius:  12px;
+      --nav-h:   64px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ── Nav ─────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: var(--nav-h);
+      background: rgba(255,248,240,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,107,107,.18);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.25rem, 5vw, 3rem);
+    }
+
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--green);
+      text-decoration: none;
+      letter-spacing: -.01em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+      position: relative;
+      transition: color .2s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--coral);
+      transition: width .25s ease;
+    }
+
+    .nav-links a:hover { color: var(--coral); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--green);
+      transition: all .3s;
+    }
+
+    /* ── Hero ────────────────────────────────────────── */
+    .hero {
+      min-height: calc(100vh - var(--nav-h));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(3rem, 8vw, 7rem) clamp(1.25rem, 6vw, 4rem);
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,107,107,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 10% 90%, rgba(45,106,79,.08) 0%, transparent 60%),
+        var(--cream);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* decorative blobs */
+    .hero::before,
+    .hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero::before {
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(255,107,107,.12) 0%, transparent 70%);
+      top: -120px;
+      right: -120px;
+    }
+    .hero::after {
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(45,106,79,.1) 0%, transparent 70%);
+      bottom: -80px;
+      left: -80px;
+    }
+
+    .hero-inner { position: relative; max-width: 780px; }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      color: var(--green);
+      margin-bottom: 1.4rem;
+      letter-spacing: -.02em;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--coral);
+    }
+
+    .hero-tagline {
+      font-size: clamp(1rem, 2.2vw, 1.3rem);
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 2.4rem;
+      letter-spacing: .01em;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: .8rem 2rem;
+      border-radius: 50px;
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-decoration: none;
+      transition: transform .18s, box-shadow .18s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+
+    .btn-primary {
+      background: var(--coral);
+      color: #fff;
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--green);
+      border: 2px solid var(--green);
+    }
+
+    /* scroll cue */
+    .scroll-cue {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .4rem;
+      color: var(--muted);
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      animation: bounce 2s infinite;
+    }
+    .scroll-cue svg { width: 20px; opacity: .5; }
+
+    @keyframes bounce {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── Section wrapper ─────────────────────────────── */
+    section { padding: clamp(3rem, 7vw, 6rem) clamp(1.25rem, 5vw, 3rem); }
+
+    .section-label {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: .65rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1.18;
+      margin-bottom: .6rem;
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── Map section ─────────────────────────────────── */
+    #map-section { background: var(--cream); }
+
+    .map-header { max-width: 1200px; margin: 0 auto; }
+
+    /* Filter pills */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .filter-btn {
+      padding: .48rem 1.3rem;
+      border-radius: 50px;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all .2s;
+      background: #fff;
+      color: var(--muted);
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    }
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--coral);
+      color: #fff;
+      border-color: var(--coral);
+      box-shadow: 0 4px 14px rgba(255,107,107,.3);
+    }
+    .filter-btn[data-filter="Culture"].active  { background: var(--green);   border-color: var(--green);   box-shadow: 0 4px 14px rgba(45,106,79,.3); }
+    .filter-btn[data-filter="Food"].active     { background: #e8963c;        border-color: #e8963c;        box-shadow: 0 4px 14px rgba(232,150,60,.3); }
+    .filter-btn[data-filter="Adventure"].active{ background: #3a86ff;        border-color: #3a86ff;        box-shadow: 0 4px 14px rgba(58,134,255,.3); }
+
+    /* Map container */
+    #world-map {
+      width: 100%;
+      height: clamp(340px, 55vw, 580px);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 40px rgba(0,0,0,.12);
+      border: 3px solid rgba(255,107,107,.15);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Custom marker */
+    .custom-marker {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--coral);
+      border: 3px solid #fff;
+      box-shadow: 0 2px 12px rgba(255,107,107,.55);
+      cursor: pointer;
+      transition: transform .15s;
+      /* Promote to its own GPU layer so opacity + translateY
+         stay on the compositor thread (no Paint pass). */
+      will-change: transform, opacity;
+    }
+    .custom-marker:hover { transform: scale(1.25); }
+    .custom-marker.cat-Culture   { background: var(--green); box-shadow: 0 2px 12px rgba(45,106,79,.55); }
+    .custom-marker.cat-Food      { background: #e8963c;      box-shadow: 0 2px 12px rgba(232,150,60,.55); }
+    .custom-marker.cat-Adventure { background: #3a86ff;      box-shadow: 0 2px 12px rgba(58,134,255,.55); }
+
+    /* ── Pin entrance animation ───────────────────────── */
+    /*  Targets the inner .custom-marker circle only, so it never
+        interferes with Leaflet's translate3d positioning on the
+        outer wrapper.
+        Uses only translateY + opacity — both pure-Composite on
+        their own GPU layer, guaranteed zero Paint frames.       */
+    @keyframes pinDrop {
+      0%   { opacity: 0; transform: translateY(-26px); }
+      55%  { opacity: 1; transform: translateY(5px);   }
+      75%  {             transform: translateY(-3px);  }
+      100% { opacity: 1; transform: translateY(0);     }
+    }
+
+    /* ── Cluster badges (coral theme) ────────────────── */
+    /* Override the plugin's default blue palette entirely */
+    .marker-cluster {
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .marker-cluster:hover { transform: scale(1.12); }
+
+    /* Outer ring — translucent coral halo */
+    .marker-cluster-small  { background-color: rgba(255,107,107,.22); width: 44px !important; height: 44px !important; }
+    .marker-cluster-medium { background-color: rgba(255,107,107,.30); width: 52px !important; height: 52px !important; }
+    .marker-cluster-large  { background-color: rgba(255,107,107,.40); width: 62px !important; height: 62px !important; }
+
+    /* Inner filled circle — solid coral with white number */
+    .marker-cluster-small  div { width: 32px; height: 32px; margin: 6px; line-height: 32px; font-size: 12px; }
+    .marker-cluster-medium div { width: 38px; height: 38px; margin: 7px; line-height: 38px; font-size: 13px; }
+    .marker-cluster-large  div { width: 46px; height: 46px; margin: 8px; line-height: 46px; font-size: 14px; }
+
+    .marker-cluster div {
+      border-radius: 50%;
+      background-color: var(--coral);
+      color: #fff;
+      font-family: 'Lato', sans-serif;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(255,107,107,.55);
+    }
+
+    /* The <span> that holds the digit */
+    .marker-cluster span { line-height: inherit; }
+
+    /* ── Popup card ──────────────────────────────────── */
+
+    /* Wrapper: rounded corners, no padding, layered shadow */
+    .leaflet-popup-content-wrapper {
+      border-radius: var(--radius) !important;
+      padding: 0 !important;
+      overflow: hidden;
+      border: none !important;
+      min-width: 250px;
+      box-shadow:
+        0 2px 6px  rgba(0,0,0,.08),
+        0 8px 24px rgba(0,0,0,.13),
+        0 20px 48px rgba(0,0,0,.10) !important;
+    }
+
+    .leaflet-popup-content { margin: 0 !important; width: auto !important; }
+
+    /* Tip arrow: match card background */
+    .leaflet-popup-tip-container { margin-top: -1px; }
+    .leaflet-popup-tip { box-shadow: none !important; }
+
+    /* ── Close button: coral circle with white × ───── */
+    .leaflet-popup-close-button {
+      /* Position over the photo */
+      top:   9px !important;
+      right: 9px !important;
+      /* Size & shape */
+      width:  26px !important;
+      height: 26px !important;
+      border-radius: 50% !important;
+      padding: 0 !important;
+      /* Coral fill */
+      background: var(--coral) !important;
+      color: #fff !important;
+      /* Centre the × glyph */
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 15px !important;
+      font-weight: 700 !important;
+      line-height: 1 !important;
+      /* Depth + interaction */
+      box-shadow: 0 2px 8px rgba(255,107,107,.45) !important;
+      transition: background .18s, transform .18s !important;
+      z-index: 5;
+      text-decoration: none !important;
+    }
+    .leaflet-popup-close-button:hover {
+      background: var(--coral-d) !important;
+      color: #fff !important;
+      transform: scale(1.12) !important;
+    }
+
+    /* ── Card internals ─────────────────────────────── */
+    .popup-card { font-family: 'Lato', sans-serif; }
+
+    /* Photo: full-width, 180 px, top corners rounded by wrapper overflow */
+    .popup-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      /* Explicit radius in case overflow:hidden is ever relaxed */
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .popup-body {
+      padding: .95rem 1.1rem 1.1rem;
+    }
+
+    /* Country name: bold serif */
+    .popup-country {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: .35rem;
+      line-height: 1.25;
+    }
+
+    /* Description: small, muted */
+    .popup-desc {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: .85rem;
+    }
+
+    /* Read More link: coral, animated underline */
+    .popup-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .28rem;
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--coral);
+      text-decoration: none;
+      letter-spacing: .03em;
+      border-bottom: 1.5px solid transparent;
+      padding-bottom: 1px;
+      transition: border-color .18s, gap .18s;
+    }
+    .popup-link:hover {
+      border-color: var(--coral);
+      gap: .5rem;
+    }
+
+    /* ── Blog cards ──────────────────────────────────── */
+    #blog-section {
+      background: linear-gradient(180deg, #fff 0%, var(--cream) 100%);
+    }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .blog-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,.07);
+      transition: transform .22s, box-shadow .22s;
+      display: flex;
+      flex-direction: column;
+    }
+    .blog-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,.13);
+    }
+
+    .blog-thumb {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .blog-body { padding: 1.4rem 1.5rem 1.6rem; flex: 1; display: flex; flex-direction: column; }
+
+    .blog-meta {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      margin-bottom: .7rem;
+    }
+
+    .blog-tag {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .22rem .7rem;
+      border-radius: 50px;
+      background: rgba(255,107,107,.1);
+      color: var(--coral);
+    }
+
+    .blog-date {
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    .blog-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: .6rem;
+      text-decoration: none;
+      display: block;
+      transition: color .18s;
+    }
+    .blog-title:hover { color: var(--coral); }
+
+    .blog-excerpt {
+      font-size: .88rem;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 1.1rem;
+    }
+
+    .blog-read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--green);
+      text-decoration: none;
+      letter-spacing: .04em;
+      margin-top: auto;
+      transition: gap .18s, color .18s;
+    }
+    .blog-read-more:hover { gap: .6rem; color: var(--coral); }
+    .blog-read-more svg { width: 14px; }
+
+    /* ── Footer ──────────────────────────────────────── */
+    .site-footer {
+      background: var(--cream);
+      border-top: 2px solid var(--green);
+      padding: 1.6rem 1.25rem 1.8rem;
+      text-align: center;
+    }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: .9rem;
+      margin-bottom: .65rem;
+    }
+
+    .footer-social a {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--coral);
+      border: 1.5px solid rgba(255, 107, 107, .38);
+      text-decoration: none;
+      transition: transform .18s ease, background .18s ease, color .18s ease;
+    }
+
+    .footer-social a:hover {
+      background: var(--coral);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .footer-social svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .footer-meta {
+      font-size: .82rem;
+      color: var(--muted);
+      margin-bottom: .45rem;
+    }
+
+    .back-to-top {
+      display: inline-flex;
+      align-items: center;
+      gap: .25rem;
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--coral);
+      text-decoration: none;
+    }
+
+    .back-to-top:hover { color: var(--coral-d); }
+
+    /* ── Scroll reveal ─────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity .65s cubic-bezier(.22, 1, .36, 1),
+        transform .65s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .reveal.reveal-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none !important;
+      }
+    }
+
+    /* ── Responsive ──────────────────────────────────── */
+    @media (max-width: 600px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: var(--nav-h);
+        left: 0; right: 0;
+        background: rgba(255,248,240,.97);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        gap: 0;
+        border-bottom: 1px solid rgba(255,107,107,.15);
+        padding: .5rem 0 1rem;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links li { padding: .5rem 1.5rem; }
+      .hamburger { display: flex; }
+    }
+  </style>
+</head>
+<body id="top">
+
+<!-- ═══════════════════════════════════════════════════
+     NAV
+══════════════════════════════════════════════════════ -->
+<nav>
+  <a  href="./index.html" class="nav-brand" title="./index.html">Wander With Suzy</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="nav-links">
+    <li><a  href="./index.html" aria-current="page" title="./index.html">Home</a></li>
+    <li><a  href="./blog.html" title="./blog.html">Blog</a></li>
+    <li><a  href="./about.html" title="./about.html">About</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <span class="hero-eyebrow">✈ Travel Blog</span>
+    <h1 class="hero-title">Wander With <em>Suzy</em></h1>
+    <p class="hero-tagline">Stories From Every Corner of the World.</p>
+    <div class="hero-cta">
+      <a  href="#blog-section" class="btn btn-primary" title="#blog-section">Read the Blog</a>
+      <a  href="#map-section"  class="btn btn-outline" title="#map-section">Explore the Map</a>
+    </div>
+  </div>
+  <div class="scroll-cue">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5"/></svg>
+    Scroll
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     MAP
+══════════════════════════════════════════════════════ -->
+<section id="map-section">
+  <div class="map-header">
+    <span class="section-label">Around the World</span>
+    <h2 class="section-title">Places I've Called Home (Temporarily)</h2>
+    <p class="section-sub">Click any pin to peek inside the adventure. Filter by travel style below.</p>
+
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-btn active" data-filter="All">All</button>
+      <button class="filter-btn" data-filter="Culture">Culture</button>
+      <button class="filter-btn" data-filter="Food">Food</button>
+      <button class="filter-btn" data-filter="Adventure">Adventure</button>
+    </div>
+  </div>
+
+  <div id="world-map"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     BLOG CARDS
+══════════════════════════════════════════════════════ -->
+<section id="blog-section">
+  <div style="max-width:1200px;margin:0 auto">
+    <span class="section-label">Latest Stories</span>
+    <h2 class="section-title">Fresh From the Road</h2>
+    <p class="section-sub">Dispatches from wherever the next flight takes me.</p>
+
+    <div class="blog-grid">
+
+      <article class="blog-card">
+        <img
+          class="blog-thumb"
+          src="https://picsum.photos/seed/santorini/640/400"
+          alt="Santorini rooftops"
+          loading="lazy"
+        />
+        <div class="blog-body">
+          <div class="blog-meta">
+            <span class="blog-tag">Culture</span>
+            <span class="blog-date">May 14, 2026</span>
+          </div>
+          <a  href="./articles/santorini.html" class="blog-title" title="./articles/santorini.html">48 Hours in Santorini: Blue Domes & Barrel Wine</a>
+          <p class="blog-excerpt">
+            I arrived expecting the postcard—and somehow the reality was even better. Here's how to slow down
+            on one of Greece's most-visited islands without feeling like a tourist.
+          </p>
+          <a  href="./articles/santorini.html" class="blog-read-more" title="./articles/santorini.html">
+            Read more
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="blog-card">
+        <img
+          class="blog-thumb"
+          src="https://picsum.photos/seed/hanoi/640/400"
+          alt="Hanoi old quarter"
+          loading="lazy"
+        />
+        <div class="blog-body">
+          <div class="blog-meta">
+            <span class="blog-tag">Food</span>
+            <span class="blog-date">April 29, 2026</span>
+          </div>
+          <a  href="./articles/hanoi-pho.html" class="blog-title" title="./articles/hanoi-pho.html">Hanoi on $30 a Day: Pho, Chaos & Pure Magic</a>
+          <p class="blog-excerpt">
+            Navigating Hanoi's Old Quarter on a budget is less a plan and more a surrender.
+            Here's where I ate, slept, and got wonderfully lost for four days.
+          </p>
+          <a  href="./articles/hanoi-pho.html" class="blog-read-more" title="./articles/hanoi-pho.html">
+            Read more
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="blog-card">
+        <img
+          class="blog-thumb"
+          src="https://picsum.photos/seed/bali-rice/640/400"
+          alt="Bali rice terraces"
+          loading="lazy"
+        />
+        <div class="blog-body">
+          <div class="blog-meta">
+            <span class="blog-tag">Adventure</span>
+            <span class="blog-date">April 10, 2026</span>
+          </div>
+          <a  href="./articles/bali-surf.html" class="blog-title" title="./articles/bali-surf.html">Sunrise at Tegallalang: Bali Before the Crowds</a>
+          <p class="blog-excerpt">
+            Set your alarm for 5 AM. Rent a scooter. Bring a light jacket. The rice terraces at dawn
+            are among the most quietly breathtaking things I've ever witnessed.
+          </p>
+          <a  href="./articles/bali-surf.html" class="blog-read-more" title="./articles/bali-surf.html">
+            Read more
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-social" aria-label="Social media links">
+    <a  href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="https://instagram.com">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r=".8"></circle></svg>
+    </a>
+    <a  href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="https://youtube.com">
+      <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29.14 29.14 0 0 0 1 12a29.14 29.14 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29.14 29.14 0 0 0 23 12a29.14 29.14 0 0 0-.46-5.58z"></path><polygon points="10 15 16 12 10 9 10 15"></polygon></svg>
+    </a>
+    <a  href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter X" title="https://x.com">
+      <svg viewBox="0 0 24 24"><path d="M4 4l16 16"></path><path d="M20 4L4 20"></path></svg>
+    </a>
+  </div>
+  <p class="footer-meta">© 2025 Wander With Suzy</p>
+  <a  href="#top" class="back-to-top" aria-label="Back to top" title="#top">↑ Back to top</a>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════
+     JS — Map + Filters + Nav
+══════════════════════════════════════════════════════ -->
+<script>
+/* ── 1. Data ──────────────────────────────────────── */
+const locations = [
+  {
+    country: 'Portugal',
+    city:    'Lisbon',
+    lat:  38.7223, lng: -9.1393,
+    category: 'Home Base',
+    catTag: 'Culture',
+    desc: 'Where it all began. Pastéis de nata and golden-hour sunsets.',
+    img:  'https://picsum.photos/seed/lisbon/400/220',
+    slug: 'lisbon'
+  },
+  {
+    country: 'Japan',
+    city:    'Tokyo',
+    lat:  35.6762, lng: 139.6503,
+    category: 'Culture',
+    catTag: 'Culture',
+    desc: 'Cherry blossoms and beautiful, controlled chaos.',
+    img:  'https://picsum.photos/seed/tokyo/400/220',
+    slug: 'tokyo'
+  },
+  {
+    country: 'Thailand',
+    city:    'Bangkok',
+    lat:  13.7563, lng: 100.5018,
+    category: 'Food',
+    catTag: 'Food',
+    desc: 'Street food heaven. Every corner is a new flavor.',
+    img:  'https://picsum.photos/seed/bangkok/400/220',
+    slug: 'bangkok'
+  },
+  {
+    country: 'Morocco',
+    city:    'Marrakech',
+    lat:  31.6295, lng: -7.9811,
+    category: 'Adventure',
+    catTag: 'Adventure',
+    desc: 'The souks, the colors, the glorious madness.',
+    img:  'https://picsum.photos/seed/marrakech/400/220',
+    slug: 'marrakech'
+  },
+  {
+    country: 'Italy',
+    city:    'Amalfi Coast',
+    lat:  40.6340, lng: 14.6027,
+    category: 'Culture',
+    catTag: 'Culture',
+    desc: 'Lemon trees, cliffside drives, and the bluest water.',
+    img:  'https://picsum.photos/seed/amalfi/400/220',
+    slug: 'amalfi'
+  },
+  {
+    country: 'Vietnam',
+    city:    'Hanoi',
+    lat:  21.0278, lng: 105.8342,
+    category: 'Food',
+    catTag: 'Food',
+    desc: 'Motorbikes, steaming pho, and old quarter magic.',
+    img:  'https://picsum.photos/seed/hanoi2/400/220',
+    slug: 'hanoi'
+  },
+  {
+    country: 'Greece',
+    city:    'Santorini',
+    lat:  36.3932, lng: 25.4615,
+    category: 'Culture',
+    catTag: 'Culture',
+    desc: 'Blue domes and impossible sunsets.',
+    img:  'https://picsum.photos/seed/santorini2/400/220',
+    slug: 'santorini'
+  },
+  {
+    country: 'Indonesia',
+    city:    'Bali',
+    lat: -8.3405, lng: 115.0920,
+    category: 'Adventure',
+    catTag: 'Adventure',
+    desc: 'Rice terraces at dawn, temple incense, and surf.',
+    img:  'https://picsum.photos/seed/bali/400/220',
+    slug: 'bali'
+  }
+];
+
+/* ── 2. Map init ──────────────────────────────────── */
+const map = L.map('world-map', {
+  center: [25, 20],
+  zoom: 2,
+  minZoom: 1,
+  maxZoom: 10,
+  zoomControl: true,
+  scrollWheelZoom: false
+});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a  href="https://carto.com/" title="https://carto.com/">CARTO</a>',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+/* ── 3. Cluster group ─────────────────────────────── */
+const clusterGroup = L.markerClusterGroup({
+  showCoverageOnHover:  false,   // no polygon outline on hover
+  zoomToBoundsOnClick:  true,    // clicking a cluster zooms to its members
+  spiderfyOnMaxZoom:    true,    // spread overlapping pins at max zoom
+  maxClusterRadius:     55,      // px — tune how eagerly pins cluster
+  animate:              true,
+  animateAddingMarkers: false,
+});
+
+map.addLayer(clusterGroup);
+
+/* ── 4. Markers ───────────────────────────────────── */
+const markers = [];
+
+function buildPopup(loc) {
+  return `
+    <div class="popup-card">
+      <img class="popup-img"
+           src="${loc.img}"
+           alt="${loc.city}, ${loc.country}"
+           loading="lazy" />
+      <div class="popup-body">
+        <div class="popup-country">${loc.city}, ${loc.country}</div>
+        <p class="popup-desc">${loc.desc}</p>
+        <a  href="#" class="popup-link" title="#">
+          Read More
+          <svg width="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>`;
+}
+
+locations.forEach(loc => {
+  const el = document.createElement('div');
+  el.className = `custom-marker cat-${loc.catTag}`;
+
+  const icon = L.divIcon({
+    html: el.outerHTML,
+    className: '',
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -16]
+  });
+
+  const marker = L.marker([loc.lat, loc.lng], { icon });
+  marker.bindPopup(buildPopup(loc), { maxWidth: 260 });
+
+  // Remove Leaflet's default instant-open click handler so we can
+  // fly first, then show the popup once the animation settles.
+  marker.off('click');
+  marker.on('click', function () {
+    // Cancel any moveend callback left over from a previous click
+    // (e.g. user clicks a second pin while still flying to the first).
+    map.off('moveend');
+
+    map.flyTo([loc.lat, loc.lng], 6, {
+      animate:       true,
+      duration:      0.9,
+      easeLinearity: 0.25
+    });
+
+    map.once('moveend', function () {
+      marker.openPopup();
+    });
+  });
+
+  marker._locData = loc;
+  markers.push(marker);
+});
+
+// Bulk-add all markers to the cluster group in one call (more efficient)
+clusterGroup.addLayers(markers);
+
+/* ── 5. Staggered entrance animation ─────────────── */
+// Helper: restart the pinDrop animation on a pin element.
+function dropPin(pin) {
+  pin.style.animation = 'none';
+  void pin.offsetWidth;          // force reflow so the reset registers
+  pin.style.animation = 'pinDrop 0.52s cubic-bezier(0.34, 1.56, 0.64, 1) both';
+}
+
+// Double-rAF: first frame lets Leaflet render the cluster group;
+// second frame guarantees marker DOM elements exist.
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    markers.forEach((marker, i) => {
+      const wrapper = marker.getElement();
+      if (!wrapper) return;          // inside a cluster at this zoom — skip
+
+      const pin = wrapper.querySelector('.custom-marker');
+      if (!pin) return;
+
+      // Mark as seen so the zoomend handler won't re-animate it
+      wrapper.dataset.dropped = '1';
+
+      // Each pin waits an extra 120 ms per index → staggered cascade
+      setTimeout(() => dropPin(pin), i * 120);
+    });
+  });
+});
+
+// When zooming in causes a cluster to split, animate each newly-visible
+// pin exactly once (dataset.dropped guards against re-animation).
+map.on('zoomend', () => {
+  markers.forEach(m => {
+    const wrapper = m.getElement();
+    if (!wrapper || wrapper.dataset.dropped) return;
+
+    const pin = wrapper.querySelector('.custom-marker');
+    if (!pin) return;
+
+    wrapper.dataset.dropped = '1';
+    dropPin(pin);
+  });
+});
+
+/* ── 6. Filter logic ──────────────────────────────── */
+const filterBar = document.getElementById('filter-bar');
+let activeFilter = 'All';
+
+filterBar.addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+
+  activeFilter = btn.dataset.filter;
+
+  // Toggle active pill
+  filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Rebuild cluster contents: clear, then re-add matching markers.
+  // addLayers / removeLayers batch the DOM updates so clusters
+  // animate in/out rather than redrawing one-by-one.
+  const show = markers.filter(m => activeFilter === 'All' || m._locData.catTag === activeFilter);
+  const hide = markers.filter(m => activeFilter !== 'All' && m._locData.catTag !== activeFilter);
+
+  clusterGroup.removeLayers(hide);
+  clusterGroup.addLayers(show);
+});
+
+/* ── 7. Hamburger ─────────────────────────────────── */
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('nav-links').classList.toggle('open');
+});
+
+/* ── 8. Scroll reveal ─────────────────────────────── */
+const revealTargets = document.querySelectorAll(
+  '.hero-inner, #map-section .map-header, #world-map, #blog-section .section-label, #blog-section .section-title, #blog-section .section-sub, #blog-section .blog-card, .site-footer'
+);
+
+revealTargets.forEach((el, index) => {
+  el.classList.add('reveal');
+  el.style.transitionDelay = `${Math.min(index * 90, 700)}ms`;
+});
+
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  revealTargets.forEach(el => {
+    el.classList.add('reveal-visible');
+    el.style.transitionDelay = '0ms';
+  });
+} else {
+  const revealObserver = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('reveal-visible');
+        revealObserver.unobserve(entry.target);
+      });
+    },
+    {
+      threshold: 0.14,
+      rootMargin: '0px 0px -8% 0px'
+    }
+  );
+
+  revealTargets.forEach(el => revealObserver.observe(el));
+}
+</script>
+
+</body>
+</html>

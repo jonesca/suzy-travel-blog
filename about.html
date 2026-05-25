@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Wander With Suzy</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─────────────────────────────────────────────────
+       TOKENS & RESET
+    ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:       #FFF8F0;
+      --coral:       #FF6B6B;
+      --coral-d:     #e85555;
+      --coral-pale:  rgba(255, 107, 107, .1);
+      --coral-ring:  rgba(255, 107, 107, .25);
+      --green:       #2D6A4F;
+      --green-l:     #40916C;
+      --green-pale:  rgba(45, 106, 79, .08);
+      --text:        #2c2c2c;
+      --muted:       #888;
+      --border:      rgba(45, 106, 79, .12);
+      --card-bg:     #ffffff;
+      --radius:      16px;
+      --nav-h:       64px;
+      --shadow-sm:   0 2px 14px rgba(0, 0, 0, .07);
+      --shadow-md:   0 8px 32px rgba(0, 0, 0, .1);
+      --shadow-lg:   0 20px 56px rgba(0, 0, 0, .12);
+      --ease:        cubic-bezier(.4, 0, .2, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ─────────────────────────────────────────────────
+       NAVIGATION
+    ───────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: var(--nav-h);
+      background: rgba(255, 248, 240, .92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 107, 107, .18);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.25rem, 5vw, 3rem);
+    }
+
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--green);
+      text-decoration: none;
+      letter-spacing: -.01em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+      position: relative;
+      transition: color .2s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--coral);
+      transition: width .25s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a[aria-current="page"] { color: var(--coral); }
+    .nav-links a:hover::after,
+    .nav-links a[aria-current="page"]::after { width: 100%; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--green);
+      transition: all .3s;
+    }
+
+    @media (max-width: 600px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: var(--nav-h);
+        left: 0; right: 0;
+        background: rgba(255, 248, 240, .97);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        gap: 0;
+        border-bottom: 1px solid rgba(255, 107, 107, .15);
+        padding: .5rem 0 1rem;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links li { padding: .5rem 1.5rem; }
+      .hamburger { display: flex; }
+    }
+
+    /* ─────────────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────────────── */
+    .hero {
+      padding: clamp(4rem, 10vw, 8rem) clamp(1.25rem, 5vw, 3rem) clamp(3rem, 6vw, 5rem);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 55% at 50% 0%,   rgba(255,107,107,.13) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 15% 95%,  rgba(45,106,79,.09)   0%, transparent 60%),
+        radial-gradient(ellipse 45% 35% at 88% 80%,  rgba(255,107,107,.07) 0%, transparent 55%),
+        var(--cream);
+    }
+
+    /* decorative rings */
+    .hero::before,
+    .hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 520px; height: 520px;
+      border: 1.5px dashed rgba(255,107,107,.18);
+      top: -160px; right: -160px;
+    }
+
+    .hero::after {
+      width: 300px; height: 300px;
+      border: 1.5px dashed rgba(45,106,79,.15);
+      bottom: -80px; left: -80px;
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Avatar ─────────────────────────────────── */
+    .avatar-wrap {
+      position: relative;
+      width: clamp(140px, 22vw, 200px);
+      height: clamp(140px, 22vw, 200px);
+      margin-bottom: clamp(1.4rem, 3vw, 2rem);
+    }
+
+    /* spinning dashed ring */
+    .avatar-ring {
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      border: 2.5px dashed rgba(255,107,107,.35);
+      animation: spin 18s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* solid coral ring on hover */
+    .avatar-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      background: transparent;
+      border: 3px solid transparent;
+      transition: border-color .3s, box-shadow .3s;
+    }
+
+    .avatar-wrap:hover::before {
+      border-color: var(--coral);
+      box-shadow: 0 0 0 6px var(--coral-ring);
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      border: 4px solid #fff;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      z-index: 1;
+      transition: transform .35s var(--ease);
+    }
+
+    .avatar-wrap:hover .avatar { transform: scale(1.03); }
+
+    /* location badge */
+    .location-badge {
+      position: absolute;
+      bottom: 2px;
+      right: -6px;
+      z-index: 2;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      padding: .28rem .8rem .28rem .55rem;
+      display: flex;
+      align-items: center;
+      gap: .32rem;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--green);
+      box-shadow: var(--shadow-sm);
+      white-space: nowrap;
+    }
+
+    .location-badge svg { width: 12px; color: var(--coral); }
+
+    /* ── Name & role ─────────────────────────────── */
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: .74rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: .7rem;
+    }
+
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      margin-bottom: .6rem;
+    }
+
+    .hero-name span { color: var(--coral); font-style: italic; }
+
+    .hero-tagline {
+      font-size: clamp(.95rem, 2vw, 1.12rem);
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 440px;
+      margin: 0 auto 1.8rem;
+      line-height: 1.7;
+    }
+
+    /* social pill links */
+    .social-row {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .social-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .42rem 1.1rem;
+      border-radius: 50px;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-decoration: none;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+      transition: all .22s var(--ease);
+    }
+
+    .social-pill svg { width: 14px; }
+    .social-pill:hover { background: var(--coral); color: #fff; border-color: var(--coral); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,107,.28); }
+
+    /* ─────────────────────────────────────────────────
+       WAVE DIVIDER
+    ───────────────────────────────────────────────── */
+    .wave {
+      display: block;
+      line-height: 0;
+      overflow: hidden;
+      margin-top: -2px;
+    }
+
+    .wave svg { display: block; width: 100%; }
+
+    /* ─────────────────────────────────────────────────
+       BIO SECTION
+    ───────────────────────────────────────────────── */
+    .bio-section {
+      background: #fff;
+      padding: clamp(3rem, 7vw, 5.5rem) clamp(1.25rem, 5vw, 3rem);
+    }
+
+    .bio-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: clamp(2rem, 5vw, 4rem);
+      align-items: start;
+    }
+
+    /* sticky sidebar label */
+    .bio-sidebar {
+      position: sticky;
+      top: calc(var(--nav-h) + 1.5rem);
+    }
+
+    .bio-label {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: .8rem;
+    }
+
+    .bio-sidebar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .bio-sidebar-title em { font-style: italic; color: var(--coral); }
+
+    .bio-sidebar-accent {
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--coral), transparent);
+      border-radius: 2px;
+    }
+
+    /* body copy */
+    .bio-copy p {
+      font-size: clamp(.95rem, 1.8vw, 1.05rem);
+      color: #555;
+      line-height: 1.85;
+      margin-bottom: 1.4rem;
+    }
+
+    .bio-copy p:last-child { margin-bottom: 0; }
+
+    .bio-copy p strong { color: var(--green); font-weight: 700; }
+
+    /* pull-quote */
+    .bio-quote {
+      border-left: 4px solid var(--coral);
+      padding: .9rem 1.2rem;
+      margin: 1.8rem 0;
+      background: var(--coral-pale);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .bio-quote p {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem !important;
+      font-style: italic;
+      color: var(--green) !important;
+      margin-bottom: 0 !important;
+      line-height: 1.6 !important;
+    }
+
+    @media (max-width: 680px) {
+      .bio-inner { grid-template-columns: 1fr; }
+      .bio-sidebar { position: static; }
+    }
+
+    /* ─────────────────────────────────────────────────
+       STATS SECTION
+    ───────────────────────────────────────────────── */
+    .stats-section {
+      background: var(--cream);
+      padding: clamp(3rem, 7vw, 5.5rem) clamp(1.25rem, 5vw, 3rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 50%, rgba(255,107,107,.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 80% 50%, rgba(45,106,79,.06)   0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .stats-inner {
+      position: relative;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .stats-header {
+      text-align: center;
+      margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: .65rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1.18;
+    }
+
+    .section-title em { font-style: italic; color: var(--coral); }
+
+    /* stat cards grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(1rem, 2.5vw, 1.6rem);
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      padding: clamp(1.5rem, 3.5vw, 2.4rem) clamp(1rem, 2.5vw, 1.6rem);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform .28s var(--ease), box-shadow .28s var(--ease);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--coral), rgba(255,107,107,.3));
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--coral-pale);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto .9rem;
+      font-size: 1.2rem;
+      transition: background .25s, transform .25s;
+    }
+
+    .stat-card:hover .stat-icon {
+      background: var(--coral);
+      transform: scale(1.12) rotate(-5deg);
+    }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--coral);
+      line-height: 1;
+      margin-bottom: .5rem;
+      letter-spacing: -.02em;
+      /* count-up animation starting value set inline via JS */
+    }
+
+    .stat-label {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+
+    .stat-sublabel {
+      font-size: .74rem;
+      color: var(--muted);
+      margin-top: .25rem;
+      font-weight: 400;
+    }
+
+    @media (max-width: 700px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 380px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─────────────────────────────────────────────────
+       NEWSLETTER SECTION
+    ───────────────────────────────────────────────── */
+    .newsletter-section {
+      background: var(--green);
+      padding: clamp(3.5rem, 8vw, 6rem) clamp(1.25rem, 5vw, 3rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* decorative blobs on dark bg */
+    .newsletter-section::before,
+    .newsletter-section::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .newsletter-section::before {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,255,255,.05) 0%, transparent 70%);
+      top: -100px; right: -80px;
+    }
+
+    .newsletter-section::after {
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(255,107,107,.12) 0%, transparent 70%);
+      bottom: -60px; left: -40px;
+    }
+
+    .newsletter-inner {
+      position: relative;
+      max-width: 580px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .newsletter-icon {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+      border: 2px solid rgba(255,255,255,.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.4rem;
+      font-size: 1.6rem;
+    }
+
+    .newsletter-eyebrow {
+      display: inline-block;
+      font-size: .73rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+      margin-bottom: .75rem;
+    }
+
+    .newsletter-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 4.5vw, 3rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: .8rem;
+      letter-spacing: -.015em;
+    }
+
+    .newsletter-title em { font-style: italic; color: var(--coral); }
+
+    .newsletter-sub {
+      font-size: .98rem;
+      font-weight: 300;
+      color: rgba(255,255,255,.68);
+      line-height: 1.7;
+      margin-bottom: 2.2rem;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* form */
+    .newsletter-form {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      transition: opacity .4s, transform .4s;
+    }
+
+    .newsletter-form.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      height: 0;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .email-input {
+      flex: 1;
+      min-width: 220px;
+      max-width: 320px;
+      padding: .85rem 1.3rem;
+      border-radius: 50px;
+      border: 2px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.12);
+      color: #fff;
+      font-family: 'Lato', sans-serif;
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .22s, background .22s, box-shadow .22s;
+      -webkit-appearance: none;
+    }
+
+    .email-input::placeholder { color: rgba(255,255,255,.45); }
+
+    .email-input:focus {
+      border-color: var(--coral);
+      background: rgba(255,255,255,.18);
+      box-shadow: 0 0 0 4px rgba(255,107,107,.25);
+    }
+
+    .subscribe-btn {
+      padding: .85rem 1.8rem;
+      border-radius: 50px;
+      border: none;
+      background: var(--coral);
+      color: #fff;
+      font-family: 'Lato', sans-serif;
+      font-size: .92rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      cursor: pointer;
+      transition: background .22s, transform .22s, box-shadow .22s;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+    }
+
+    .subscribe-btn svg { width: 15px; }
+
+    .subscribe-btn:hover {
+      background: var(--coral-d);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255,107,107,.4);
+    }
+
+    .subscribe-btn:active { transform: translateY(0); }
+
+    /* shake on empty submit */
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60%  { transform: translateX(-7px); }
+      40%,80%  { transform: translateX(7px); }
+    }
+
+    .email-input.shake { animation: shake .4s var(--ease); border-color: var(--coral) !important; }
+
+    /* privacy micro-copy */
+    .newsletter-privacy {
+      margin-top: 1.1rem;
+      font-size: .74rem;
+      color: rgba(255,255,255,.38);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .35rem;
+    }
+
+    .newsletter-privacy svg { width: 11px; opacity: .6; }
+
+    /* ── Success state ────────────────────────────── */
+    .success-msg {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: .8rem;
+    }
+
+    .success-msg.visible {
+      display: flex;
+      animation: successIn .58s var(--ease) both;
+    }
+
+    @keyframes successIn {
+      0%   { opacity: 0; transform: translateY(14px) scale(.97); }
+      65%  { opacity: 1; transform: translateY(-5px) scale(1.01); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .success-confetti {
+      font-size: 3rem;
+      line-height: 1;
+      animation: pop .5s .1s var(--ease) both;
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(0) rotate(-15deg); }
+      70%  { transform: scale(1.18) rotate(4deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    .success-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+      color: #fff;
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1.35;
+    }
+
+    .success-sub {
+      font-size: .88rem;
+      color: rgba(255,255,255,.6);
+      font-weight: 300;
+    }
+
+    .confetti-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 3;
+    }
+
+    .confetti-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: confettiBurst .72s cubic-bezier(.22, .8, .3, 1) forwards;
+    }
+
+    @keyframes confettiBurst {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(.35);
+      }
+      22% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy)) scale(1);
+      }
+    }
+
+    /* ─────────────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────────────── */
+    .site-footer {
+      background: var(--cream);
+      border-top: 2px solid var(--green);
+      padding: 1.6rem 1.25rem 1.8rem;
+      text-align: center;
+    }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: .9rem;
+      margin-bottom: .65rem;
+    }
+
+    .footer-social a {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--coral);
+      border: 1.5px solid rgba(255, 107, 107, .38);
+      text-decoration: none;
+      transition: transform .18s ease, background .18s ease, color .18s ease;
+    }
+
+    .footer-social a:hover {
+      background: var(--coral);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .footer-social svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .footer-meta {
+      font-size: .82rem;
+      color: var(--muted);
+      margin-bottom: .45rem;
+    }
+
+    .back-to-top {
+      display: inline-flex;
+      align-items: center;
+      gap: .25rem;
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--coral);
+      text-decoration: none;
+    }
+
+    .back-to-top:hover { color: var(--coral-d); }
+
+    /* ─────────────────────────────────────────────────
+       COUNT-UP ANIMATION
+    ───────────────────────────────────────────────── */
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity .65s cubic-bezier(.22, 1, .36, 1),
+        transform .65s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .reveal.reveal-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body id="top">
+
+<!-- ═══════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════ -->
+<nav>
+  <a  href="./index.html" class="nav-brand" title="./index.html">Wander With Suzy</a>
+  <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="nav-links" role="list">
+    <li><a  href="./index.html" title="./index.html">Home</a></li>
+    <li><a  href="./blog.html" title="./blog.html">Blog</a></li>
+    <li><a  href="./about.html" aria-current="page" title="./about.html">About</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+
+    <!-- Circular headshot -->
+    <div class="avatar-wrap">
+      <div class="avatar-ring" aria-hidden="true"></div>
+      <img
+        class="avatar"
+        src="https://picsum.photos/seed/suzy-portrait/400/400"
+        alt="A photo of Suzy, smiling in front of a blurred travel backdrop"
+      />
+      <!-- Location badge -->
+      <span class="location-badge" aria-label="Based in Lisbon, Portugal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Z"/><circle cx="12" cy="9" r="2.5"/>
+        </svg>
+        Lisbon, Portugal
+      </span>
+    </div>
+
+    <span class="hero-eyebrow">✈ Travel Blogger & Storyteller</span>
+    <h1 class="hero-name">Hi, I'm <span>Suzy</span></h1>
+    <p class="hero-tagline">
+      I trade office chairs for window seats, and spreadsheets for passports.
+      Welcome to my little corner of the internet — pull up a seat.
+    </p>
+
+    <!-- Social pills -->
+    <div class="social-row">
+      <a  href="#" class="social-pill" aria-label="Instagram" title="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/>
+        </svg>
+        Instagram
+      </a>
+      <a  href="#" class="social-pill" aria-label="Pinterest" title="#">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.08 3.17 9.44 7.65 11.19-.1-.94-.2-2.4.04-3.44.22-.93 1.48-6.26 1.48-6.26s-.38-.76-.38-1.88c0-1.76 1.02-3.08 2.28-3.08 1.08 0 1.6.81 1.6 1.78 0 1.09-.69 2.71-1.05 4.21-.3 1.26.62 2.28 1.86 2.28 2.23 0 3.74-2.84 3.74-6.2 0-2.56-1.74-4.35-4.22-4.35-2.87 0-4.56 2.15-4.56 4.38 0 .87.33 1.8.75 2.3a.3.3 0 0 1 .07.28l-.28 1.14c-.04.17-.15.21-.34.13C5.49 13.3 4.5 11.5 4.5 10c0-3.4 2.47-6.52 7.12-6.52 3.74 0 6.65 2.66 6.65 6.22 0 3.7-2.33 6.69-5.57 6.69-1.09 0-2.11-.57-2.46-1.23l-.67 2.49c-.24.93-.89 2.09-1.33 2.8C11 20.95 11.49 21 12 21c6.63 0 12-5.37 12-12S18.63 0 12 0Z"/>
+        </svg>
+        Pinterest
+      </a>
+      <a  href="#newsletter-section" class="social-pill" aria-label="Subscribe to newsletter" title="#newsletter-section">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+        </svg>
+        Newsletter
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- wave -->
+<span class="wave" aria-hidden="true">
+  <svg viewBox="0 0 1440 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C360,40 720,0 1080,20 C1260,30 1360,16 1440,20 L1440,40 L0,40 Z" fill="#ffffff"/>
+  </svg>
+</span>
+
+<!-- ═══════════════════════════════════════════════
+     BIO
+════════════════════════════════════════════════ -->
+<section class="bio-section">
+  <div class="bio-inner">
+
+    <div class="bio-sidebar">
+      <span class="bio-label">My Story</span>
+      <h2 class="bio-sidebar-title">Wanderer by<br/><em>choice</em></h2>
+      <div class="bio-sidebar-accent"></div>
+    </div>
+
+    <div class="bio-copy">
+      <p>
+        I grew up in <strong>Lisbon, Portugal</strong> — a city of hills, fado, and the kind of
+        golden light that makes every cobblestone look like a painting. I'd always felt the pull of
+        somewhere else, the specific restlessness that comes from watching planes streak overhead and
+        wondering <em>where they're going</em>. It took me until twenty-six to finally stop
+        wondering and start booking. That first solo flight to Tokyo — terrifying, exhilarating,
+        slightly turbulent — changed the entire trajectory of my life.
+      </p>
+
+      <blockquote class="bio-quote">
+        <p>"I didn't find myself travelling. I found out I didn't need to — I was already here,
+        just waiting for a window seat."</p>
+      </blockquote>
+
+      <p>
+        Two years and eight countries later, <strong>Wander With Suzy</strong> is what happens when
+        a former graphic designer falls head-first into slow travel, local food, and the art of
+        getting comfortably lost. I write honest, unhurried stories about the places I've stayed long
+        enough to love: the hidden <strong>tascas of Mouraria</strong>, a ryokan in the Japanese Alps
+        where I was the only guest, the morning the Marrakech souks felt like mine. This blog is less
+        itinerary and more invitation — to pack lighter, stay longer, and eat whatever the person at
+        the next table is having.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- reverse wave -->
+<span class="wave" aria-hidden="true">
+  <svg viewBox="0 0 1440 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C360,0 720,40 1080,20 C1260,10 1360,24 1440,20 L1440,0 L0,0 Z" fill="#ffffff"/>
+  </svg>
+</span>
+
+<!-- ═══════════════════════════════════════════════
+     TRAVEL STATS
+════════════════════════════════════════════════ -->
+<section class="stats-section">
+  <div class="stats-inner">
+
+    <div class="stats-header">
+      <span class="section-label">By the Numbers</span>
+      <h2 class="section-title">Two Years of <em>Wandering</em></h2>
+    </div>
+
+    <div class="stats-grid">
+
+      <div class="stat-card" data-target="8" data-suffix="">
+        <div class="stat-icon" aria-hidden="true">🌍</div>
+        <div class="stat-number" aria-label="8 countries">8</div>
+        <div class="stat-label">Countries</div>
+        <div class="stat-sublabel">and counting</div>
+      </div>
+
+      <div class="stat-card" data-target="47" data-suffix=",000 km">
+        <div class="stat-icon" aria-hidden="true">✈️</div>
+        <div class="stat-number" aria-label="47,000 kilometres">47,000 km</div>
+        <div class="stat-label">Travelled</div>
+        <div class="stat-sublabel">in the air alone</div>
+      </div>
+
+      <div class="stat-card" data-target="2" data-suffix="">
+        <div class="stat-icon" aria-hidden="true">📅</div>
+        <div class="stat-number" aria-label="2 years">2 Years</div>
+        <div class="stat-label">On the Road</div>
+        <div class="stat-sublabel">since leaving Lisbon</div>
+      </div>
+
+      <div class="stat-card" data-target="156" data-suffix="">
+        <div class="stat-icon" aria-hidden="true">✍️</div>
+        <div class="stat-number" aria-label="156 posts">156</div>
+        <div class="stat-label">Posts</div>
+        <div class="stat-sublabel">published here</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- wave into newsletter -->
+<span class="wave" aria-hidden="true">
+  <svg viewBox="0 0 1440 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,10 C240,32 480,0 720,20 C960,38 1200,6 1440,18 L1440,40 L0,40 Z" fill="#2D6A4F"/>
+  </svg>
+</span>
+
+<!-- ═══════════════════════════════════════════════
+     NEWSLETTER
+════════════════════════════════════════════════ -->
+<section class="newsletter-section" id="newsletter-section">
+  <div class="newsletter-inner">
+
+    <div class="newsletter-icon" aria-hidden="true">✉️</div>
+
+    <span class="newsletter-eyebrow">No spam, ever</span>
+    <h2 class="newsletter-title">Join the <em>Journey</em></h2>
+    <p class="newsletter-sub">
+      New stories, hidden gems, and honest travel tips — delivered to your inbox
+      whenever I find something worth writing home about.
+    </p>
+
+    <!-- Form -->
+    <form class="newsletter-form" id="newsletter-form" novalidate>
+      <label for="email-input" class="sr-only">Your email address</label>
+      <input
+        class="email-input"
+        id="email-input"
+        type="email"
+        placeholder="your@email.com"
+        autocomplete="email"
+        inputmode="email"
+        required
+      />
+      <button type="submit" class="subscribe-btn">
+        Subscribe
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </form>
+
+    <!-- Privacy note -->
+    <p class="newsletter-privacy" id="newsletter-privacy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+      Your email stays private. Unsubscribe any time.
+    </p>
+
+    <!-- Success message (hidden by default) -->
+    <div class="success-msg" id="success-msg" role="status" aria-live="polite">
+      <span class="success-confetti" aria-hidden="true">🎉</span>
+      <p class="success-text">You're in! Check your inbox for adventures.</p>
+      <p class="success-sub">Welcome to the journey — I can't wait to share it with you.</p>
+    </div>
+
+    <div class="confetti-layer" id="confetti-layer" aria-hidden="true"></div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-social" aria-label="Social media links">
+    <a  href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="https://instagram.com">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r=".8"></circle></svg>
+    </a>
+    <a  href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="https://youtube.com">
+      <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29.14 29.14 0 0 0 1 12a29.14 29.14 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29.14 29.14 0 0 0 23 12a29.14 29.14 0 0 0-.46-5.58z"></path><polygon points="10 15 16 12 10 9 10 15"></polygon></svg>
+    </a>
+    <a  href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter X" title="https://x.com">
+      <svg viewBox="0 0 24 24"><path d="M4 4l16 16"></path><path d="M20 4L4 20"></path></svg>
+    </a>
+  </div>
+  <p class="footer-meta">© 2025 Wander With Suzy</p>
+  <a  href="#top" class="back-to-top" aria-label="Back to top" title="#top">↑ Back to top</a>
+</footer>
+
+<!-- ═══════════════════════════════════════════════
+     JS
+════════════════════════════════════════════════ -->
+<script>
+  /* ── Hamburger ─────────────────────────────── */
+  const hamburger = document.getElementById('hamburger');
+  const navLinks  = document.getElementById('nav-links');
+
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+
+  document.addEventListener('click', e => {
+    if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  /* ── Stat counter (IntersectionObserver) ────── */
+  const statCards = document.querySelectorAll('.stat-card[data-target]');
+
+  const easeOutQuad = t => 1 - (1 - t) * (1 - t);
+
+  function animateCount(el, target, duration = 1400) {
+    const numEl = el.querySelector('.stat-number');
+    // cards with commas / units show static text — skip pure animation
+    if (numEl.textContent.includes(',') || numEl.textContent.includes('Year')) return;
+
+    const start = performance.now();
+    const suffix = el.dataset.suffix || '';
+
+    function tick(now) {
+      const elapsed  = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased    = easeOutQuad(progress);
+      const current  = Math.round(eased * target);
+      numEl.textContent = current + suffix;
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+
+    numEl.textContent = '0' + suffix;
+    requestAnimationFrame(tick);
+  }
+
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = parseInt(entry.target.dataset.target, 10);
+          animateCount(entry.target, target);
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.25 }
+  );
+
+  statCards.forEach(card => observer.observe(card));
+
+  /* ── Newsletter form ───────────────────────── */
+  const form       = document.getElementById('newsletter-form');
+  const emailInput = document.getElementById('email-input');
+  const successMsg = document.getElementById('success-msg');
+  const privacy    = document.getElementById('newsletter-privacy');
+  const confettiLayer = document.getElementById('confetti-layer');
+  const subscribeBtn = form.querySelector('.subscribe-btn');
+
+  const isValidEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+
+  function burstConfettiFromButton(button) {
+    if (!button || !confettiLayer) return;
+
+    const buttonRect = button.getBoundingClientRect();
+    const layerRect = confettiLayer.getBoundingClientRect();
+    const originX = buttonRect.left + buttonRect.width / 2 - layerRect.left;
+    const originY = buttonRect.top + buttonRect.height / 2 - layerRect.top;
+    const palette = ['var(--coral)', 'var(--green)'];
+    const dots = 6;
+
+    for (let i = 0; i < dots; i += 1) {
+      const dot = document.createElement('span');
+      const angle = ((Math.PI * 2) / dots) * i - Math.PI / 2;
+      const distance = 44 + Math.random() * 22;
+      const dx = Math.cos(angle) * distance;
+      const dy = Math.sin(angle) * distance;
+
+      dot.className = 'confetti-dot';
+      dot.style.left = `${originX}px`;
+      dot.style.top = `${originY}px`;
+      dot.style.background = palette[i % palette.length];
+      dot.style.setProperty('--dx', `${dx}px`);
+      dot.style.setProperty('--dy', `${dy}px`);
+
+      confettiLayer.appendChild(dot);
+      dot.addEventListener('animationend', () => dot.remove(), { once: true });
+    }
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    if (!isValidEmail(emailInput.value)) {
+      /* shake the input */
+      emailInput.classList.remove('shake');
+      void emailInput.offsetWidth; /* reflow to restart animation */
+      emailInput.classList.add('shake');
+      emailInput.focus();
+      emailInput.addEventListener('animationend', () => emailInput.classList.remove('shake'), { once: true });
+      return;
+    }
+
+    burstConfettiFromButton(subscribeBtn);
+
+    /* hide form + privacy, reveal success */
+    form.classList.add('hidden');
+    privacy.style.display = 'none';
+    successMsg.classList.add('visible');
+  });
+
+  /* ── Scroll reveal ─────────────────────────── */
+  const revealTargets = document.querySelectorAll(
+    '.hero-inner, .bio-sidebar, .bio-copy p, .bio-quote, .stats-header, .stat-card, .newsletter-inner > *, .site-footer'
+  );
+
+  revealTargets.forEach((el, index) => {
+    el.classList.add('reveal');
+    el.style.transitionDelay = `${Math.min(index * 90, 700)}ms`;
+  });
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    revealTargets.forEach(el => {
+      el.classList.add('reveal-visible');
+      el.style.transitionDelay = '0ms';
+    });
+  } else {
+    const revealObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('reveal-visible');
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.14,
+        rootMargin: '0px 0px -8% 0px'
+      }
+    );
+
+    revealTargets.forEach(el => revealObserver.observe(el));
+  }
+</script>
+
+<!-- sr-only utility used in the form -->
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kyoto in Autumn — Wander With Suzy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #FFF8F0; --coral: #FF6B6B; --coral-d: #e85555;
+      --green: #2D6A4F; --green-l: #40916C; --text: #2c2c2c;
+      --muted: #888; --border: rgba(45,106,79,.12); --card-bg: #fff;
+      --radius: 14px; --nav-h: 64px;
+      --shadow-sm: 0 2px 12px rgba(0,0,0,.07);
+      --shadow-lg: 0 18px 48px rgba(0,0,0,.13);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--text); line-height: 1.65; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 1000; height: var(--nav-h); background: rgba(255,248,240,.92); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,107,107,.18); display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(1.25rem,5vw,3rem); }
+    .nav-brand { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--green); text-decoration: none; letter-spacing: -.01em; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: .9rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text); text-decoration: none; position: relative; transition: color .2s; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 2px; background: var(--coral); transition: width .25s ease; }
+    .nav-links a:hover { color: var(--coral); }
+    .nav-links a:hover::after { width: 100%; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--green); transition: all .3s; }
+    @media (max-width:600px) {
+      .nav-links { display: none; position: absolute; top: var(--nav-h); left: 0; right: 0; background: rgba(255,248,240,.97); backdrop-filter: blur(12px); flex-direction: column; gap: 0; border-bottom: 1px solid rgba(255,107,107,.15); padding: .5rem 0 1rem; }
+      .nav-links.open { display: flex; }
+      .nav-links li { padding: .5rem 1.5rem; }
+      .hamburger { display: flex; }
+    }
+
+    /* HERO */
+    .post-hero { position: relative; height: clamp(320px, 55vw, 560px); overflow: hidden; }
+    .post-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .post-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.15) 0%, rgba(0,0,0,.62) 100%); }
+    .post-hero-content { position: absolute; bottom: 0; left: 0; right: 0; padding: clamp(1.5rem,5vw,3rem) clamp(1.25rem,5vw,3rem); max-width: 860px; }
+    .breadcrumb { display: flex; align-items: center; gap: .45rem; font-size: .74rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.7); margin-bottom: .8rem; }
+    .breadcrumb a { color: rgba(255,255,255,.7); text-decoration: none; transition: color .2s; }
+    .breadcrumb a:hover { color: #fff; }
+    .breadcrumb svg { width: 12px; opacity: .5; }
+    .post-cat { display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #fff; background: var(--green); padding: .28rem .85rem; border-radius: 50px; margin-bottom: .8rem; }
+    .post-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.7rem,4.5vw,3.2rem); font-weight: 700; color: #fff; line-height: 1.15; letter-spacing: -.02em; margin-bottom: 1rem; text-shadow: 0 2px 12px rgba(0,0,0,.3); }
+    .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; font-size: .8rem; color: rgba(255,255,255,.75); }
+    .post-meta .sep { opacity: .4; }
+    .post-meta strong { color: #fff; font-weight: 700; }
+
+    /* ARTICLE BODY */
+    .article-wrap { max-width: 740px; margin: 0 auto; padding: clamp(2.5rem,6vw,4.5rem) clamp(1.25rem,5vw,2rem); }
+    .article-lead { font-size: clamp(1.05rem,2vw,1.2rem); font-weight: 300; color: #555; line-height: 1.85; margin-bottom: 2rem; border-left: 4px solid var(--coral); padding-left: 1.2rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.3rem,2.5vw,1.7rem); font-weight: 700; color: var(--green); margin: 2.4rem 0 .9rem; line-height: 1.25; }
+    .article-body p { font-size: 1.02rem; color: #444; line-height: 1.85; margin-bottom: 1.3rem; }
+    .article-body p strong { color: var(--green); font-weight: 700; }
+    .article-body p em { color: var(--coral); font-style: italic; }
+    .pull-quote { border-left: 4px solid var(--coral); background: rgba(255,107,107,.07); border-radius: 0 var(--radius) var(--radius) 0; padding: 1.1rem 1.4rem; margin: 2rem 0; }
+    .pull-quote p { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-style: italic; color: var(--green); line-height: 1.6; margin: 0; }
+    .inline-img-wrap { margin: 2.2rem 0; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg); }
+    .inline-img-wrap img { width: 100%; display: block; max-height: 420px; object-fit: cover; }
+    .img-caption { font-size: .78rem; color: var(--muted); text-align: center; padding: .6rem 1rem; background: #fff; font-style: italic; }
+
+    /* TAGS */
+    .post-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .tag { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: .28rem .85rem; border-radius: 50px; background: rgba(45,106,79,.08); color: var(--green); border: 1px solid rgba(45,106,79,.15); }
+
+    /* BACK BUTTON */
+    .back-link { display: inline-flex; align-items: center; gap: .4rem; margin-top: 2.5rem; font-size: .85rem; font-weight: 700; color: var(--green); text-decoration: none; letter-spacing: .04em; border: 2px solid var(--green); padding: .6rem 1.4rem; border-radius: 50px; transition: all .22s; }
+    .back-link:hover { background: var(--green); color: #fff; }
+    .back-link svg { width: 14px; }
+
+    /* RELATED */
+    .related-section { background: #fff; border-top: 1px solid var(--border); padding: clamp(2.5rem,6vw,4rem) clamp(1.25rem,5vw,3rem); }
+    .related-inner { max-width: 900px; margin: 0 auto; }
+    .related-label { font-size: .72rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--coral); margin-bottom: .5rem; }
+    .related-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--green); margin-bottom: 1.8rem; }
+    .related-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.5rem; }
+    @media (max-width:580px) { .related-grid { grid-template-columns: 1fr; } }
+    .related-card { background: var(--cream); border-radius: var(--radius); overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: transform .22s, box-shadow .22s; }
+    .related-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+    .related-card img { width: 100%; height: 160px; object-fit: cover; display: block; transition: transform .4s; }
+    .related-card:hover img { transform: scale(1.05); }
+    .related-card-body { padding: 1.1rem 1.2rem 1.3rem; }
+    .related-card-cat { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--coral); margin-bottom: .4rem; }
+    .related-card-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: .35rem; }
+    .related-card-date { font-size: .75rem; color: var(--muted); }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 2.5rem 1.5rem; border-top: 1px solid var(--border); font-size: .82rem; color: var(--muted); background: var(--cream); }
+    footer a { color: var(--coral); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a  href="../index.html" class="nav-brand" title="../index.html">Wander With Suzy</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="nav-links">
+    <li><a  href="../index.html" title="../index.html">Home</a></li>
+    <li><a  href="../blog.html" title="../blog.html">Blog</a></li>
+    <li><a  href="../about.html" title="../about.html">About</a></li>
+  </ul>
+</nav>
+
+<article>
+
+  <!-- HERO -->
+  <div class="post-hero">
+    <img src="https://picsum.photos/seed/kyoto-temple-fall/1400/700" alt="Autumn maple trees lining a stone path toward a Kyoto temple" />
+    <div class="post-hero-overlay"></div>
+    <div class="post-hero-content">
+      <div class="breadcrumb">
+        <a  href="../blog.html" title="../blog.html">Blog</a>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        Culture
+      </div>
+      <span class="post-cat">Culture</span>
+      <h1>Kyoto in Autumn: A Week Among Temples, Tea & Turning Leaves</h1>
+      <div class="post-meta">
+        <span><strong>May 18, 2026</strong></span>
+        <span class="sep">·</span>
+        <span>8 min read</span>
+        <span class="sep">·</span>
+        <span>Kyoto, Japan</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="article-wrap">
+    <p class="article-lead">There is a particular quality of light in Kyoto in November — amber, low, and almost apologetic, as though it knows it is making everything unbearably beautiful and feels slightly guilty about it. I arrived on a Tuesday afternoon, jet-lagged and wide-eyed, and within twenty minutes of stepping off the shinkansen, I had already decided I was never leaving.</p>
+
+    <div class="article-body">
+
+      <h2>The Philosopher's Path at Dawn</h2>
+      <p>The guidebooks tell you to walk the <strong>Philosopher's Path</strong> — a 2-kilometre stone canal path that runs between Ginkaku-ji and Nanzen-ji — but they rarely tell you <em>when</em>. The answer is before 7am, before the tour groups arrive, before the matcha-soft-serve vendors set up their stalls. At that hour the maples are the colour of embers, the canal is perfectly still, and the only sounds are the scrape of a broom from somewhere behind a garden wall and the faint, unhurried drip of water.</p>
+      <p>I walked it four times that week. Each time felt different — once in rain, which turned the stones dark and made the colours brighter; once at dusk, when the lampposts click on one by one and the path empties in an instant. It became the rhythm that organised my whole trip.</p>
+
+      <div class="pull-quote"><p>"I didn't find myself in Kyoto. I found that getting wonderfully lost — in a city that rewards slowness — is quite enough."</p></div>
+
+      <h2>A Tea Ceremony I Nearly Skipped</h2>
+      <p>On day three I almost booked a cooking class instead. I'm glad I didn't. The ceremony I attended — a small, private session in a machiya townhouse in the Nishiki neighbourhood — was not the theatrical performance I'd feared. It was slow, deliberate, and almost entirely silent. The host, a woman in her sixties who'd studied chado for thirty-five years, communicated more with a precise turn of the bowl than most conversations manage in an hour.</p>
+      <p>You are served <strong>usucha</strong> — thin, bright, grassy matcha — alongside a single wagashi sweet whose flavour is calibrated to balance the tea's bitterness. The whole exchange lasts perhaps forty minutes. I left feeling scrubbed from the inside, as though I'd accidentally meditated.</p>
+
+      <div class="inline-img-wrap">
+        <img src="https://picsum.photos/seed/kyoto-teahouse/900/500" alt="Interior of a traditional Kyoto teahouse, tatami mats and a single ceramic bowl" loading="lazy" />
+        <p class="img-caption">The teahouse in Nishiki where forty silent minutes turned into the highlight of the week.</p>
+      </div>
+
+      <h2>Fushimi Inari: Go Late, Not Early</h2>
+      <p>Everyone visits <strong>Fushimi Inari Taisha</strong>. The endless vermilion torii gates climbing the forested mountain behind the shrine are among the most photographed things in Japan, and for entirely good reason. But everyone also goes in the morning, which means the first kilometre of gates is a continuous traffic jam of selfie sticks and matching luggage sets.</p>
+      <p>The solution is counterintuitive: go at 4pm. Most day-trippers are heading back to Kyoto station by then. Climb past the first cluster of souvenir stalls and within twenty minutes you'll be almost entirely alone. The gates become stranger and more magnificent the higher you go — and at the summit, the view over southern Kyoto at golden hour is one I still think about when I can't sleep.</p>
+
+      <h2>Where I Ate (and Ate, and Ate)</h2>
+      <p>Kyoto's food culture is quietly exceptional. Breakfast every morning was <strong>tofu and pickles</strong> at a small shokudo near my guesthouse where the menu was entirely in Japanese and pointing was the only strategy. Lunch usually involved a bowl of soba eaten standing at a counter — the kind of place that has been there since your grandparents' grandparents were young. Dinner on two occasions was kaiseki, the multi-course haute cuisine that Kyoto considers its culinary signature: delicate, seasonal, expensive, and absolutely worth it at least once.</p>
+      <p>The best thing I ate all week was neither of those. It was a <em>yudofu</em> — tofu gently simmered in kombu broth — eaten in the garden of Nanzen-ji temple as the maples dropped. Simple, warm, slightly sweet. The kind of thing that tastes of exactly where you are.</p>
+
+      <h2>Practical Things Worth Knowing</h2>
+      <p>The city runs on a bus and subway system that is, once decoded, excellent. Buy a <strong>Kyoto City Bus One-Day Pass</strong> for ¥700 — it covers every bus route and pays for itself after three journeys. Stay west of the Kamo River if you want to be close to most temples; the Fushimi ward is worth considering if you want fewer tourists and cheaper accommodation. November weekends are crowded everywhere; if you can, arrive mid-week.</p>
+      <p>Finally: bring layers, bring good walking shoes, and bring a small umbrella. Autumn in Kyoto is magnificent in the rain. The maples are, if anything, better for it.</p>
+
+    </div>
+
+    <div class="post-tags">
+      <span class="tag">Japan</span>
+      <span class="tag">Kyoto</span>
+      <span class="tag">Culture</span>
+      <span class="tag">Autumn Travel</span>
+      <span class="tag">Tea Ceremony</span>
+      <span class="tag">Temples</span>
+    </div>
+
+    <a  href="../blog.html" class="back-link" title="../blog.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to all stories
+    </a>
+  </div>
+
+</article>
+
+<!-- RELATED -->
+<section class="related-section">
+  <div class="related-inner">
+    <p class="related-label">Keep Reading</p>
+    <h2 class="related-title">More Stories</h2>
+    <div class="related-grid">
+      <a  href="santorini.html" class="related-card" title="santorini.html">
+        <img src="https://picsum.photos/seed/santorini-oia/600/300" alt="Santorini" loading="lazy" />
+        <div class="related-card-body">
+          <p class="related-card-cat">Culture</p>
+          <p class="related-card-title">Beyond the Blue Domes: Santorini's Quieter, Wilder Side</p>
+          <p class="related-card-date">Feb 27, 2026</p>
+        </div>
+      </a>
+      <a  href="bangkok-street-food.html" class="related-card" title="bangkok-street-food.html">
+        <img src="https://picsum.photos/seed/bangkok-street/600/300" alt="Bangkok" loading="lazy" />
+        <div class="related-card-body">
+          <p class="related-card-cat">Food</p>
+          <p class="related-card-title">The Only Bangkok Street Food Guide You'll Ever Need</p>
+          <p class="related-card-date">May 6, 2026</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Made with ♥ and too much coffee &nbsp;·&nbsp; © 2026 <a  href="../index.html" title="../index.html">Wander With Suzy</a> &nbsp;·&nbsp; <a  href="#" title="#">Privacy</a></p>
+</footer>
+
+<script>
+  const h = document.getElementById('hamburger'), n = document.getElementById('nav-links');
+  h.addEventListener('click', () => n.classList.toggle('open'));
+  document.addEventListener('click', e => { if (!h.contains(e.target) && !n.contains(e.target)) n.classList.remove('open'); });
+</script>
+</body>
+</html>
